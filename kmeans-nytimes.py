@@ -121,8 +121,7 @@ for i in range(num_clusters):
 print()
 print()
 
-# My attempt at plotting this as visual data but couldn't get it to do anything.
-
+# Visualization 
 tfidf_matrix_reduced = TruncatedSVD(n_components=num_clusters, random_state=0).fit_transform(tfidf_matrix)
 tfidf_matrix_embedded = TSNE(n_components=2, perplexity=40, verbose=2).fit_transform(tfidf_matrix_reduced)
 
