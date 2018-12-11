@@ -22,82 +22,32 @@ from collections import Counter
 import time
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import classification_report
+from sklearn.metrics import roc_auc_score
+import warnings
+warnings.filterwarnings('always')  # "error", "ignore", "always", "default", "module" or "once"
 
 # Extract randomized sample selection
-d = pd.read_json('newyorktimes_filtered.jsonl', lines=True)
+d = pd.read_json('NewYorkTimesClean.jsonl', lines=True)
 dff = pd.DataFrame(data=d, columns=['headline', 'keywords', 'lead_paragraph', 'section'])
 df = dff.sample(frac=0.2, replace=True)
 df = df.fillna('nullval') # or just: TextData df['lead_paragraph'].fillna('some value')
 df = df[~df.lead_paragraph.str.contains('nullval')]
+df = df[~df.headline.str.contains('nullval')]
+df = df[~df.section.str.contains('nullval')]
+df['section_id'] = df.section.factorize()[0]
 
-# Clean up data.
-regex1 = re.compile('[%s]' % re.escape(string.punctuation))
-stop = stopwords.words('english')
-# Remove stop words
-def f(x):
-    return [w for w in x if w not in stop]
+tfidf = TfidfVectorizer(sublinear_tf=True, min_df=17, norm='l2', encoding='latin-1', ngram_range=(1, 2), stop_words='english')
+features = tfidf.fit_transform(df.lead_paragraph).toarray()
+labels = df.section_id.values.tolist()
 
-df['section'] = df.section.apply(lambda x : str.lower(x))
-df['section'] = df.section.apply(lambda x : re.sub(r'[^\w\s]+', '', x))
+y = labels
+X = features
 
-df['lead_paragraph'] = df.lead_paragraph.fillna('nullval').apply(lambda x : str.lower(x))
-df['lead_paragraph'] = df.lead_paragraph.apply(lambda x : re.sub(r'[^\w\s]+', '', x))
-df['lead_paragraph'] = df.lead_paragraph.apply(lambda x : re.sub(r'\b\d+(?:\.\d+)?\s+', '', x))
-df['lead_paragraph'] = df.lead_paragraph.apply(lambda x : re.sub("[^a-zA-Z]",  " ",  str(x)))
-df['lead_paragraph'] = df['lead_paragraph'].str.split().apply(f).str.join(' ')
-#df['lead_paragraph'] = df['lead_paragraph'].fillna('nullval').apply(lambda x : word_tokenize(str(x)))
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
-new = df[['section', 'lead_paragraph']]
+clf = MultinomialNB()
+clf.fit(X_train, y_train)
+y_pred_nb = clf.predict(X_test)
 
-data_features = new.iloc[:,1]
-data_labels = new.iloc[:,0]
-
-X_train, X_test, y_train, y_test = train_test_split(data_features,
-                                                   data_labels,
-                                                   test_size=.2, random_state=1234)
-
-################################################################
-################ TF-IDF ########################################
-
-# Use CountVectorizer to count the number of occurences for each term.
-cvec = CountVectorizer(stop_words='english', min_df=.0025, max_df=.1, ngram_range=(1,2))
-cvec.fit(data_features)
-
-# Top 20 most common terms.
-cvec_counts = cvec.transform(data_features)
-occurences = np.asarray(cvec_counts.sum(axis=0)).ravel().tolist()
-df_counts = pd.DataFrame({'term': cvec.get_feature_names(), 'occurrences': occurences})
-#print(df_counts.sort_values(by='occurrences', ascending=False).head(20))
-
-# Tf-IDF; using TfidfTransformer to calculate weights for each term.
-tfidf_trans = TfidfTransformer()
-tfidf_trans_weights = tfidf_trans.fit_transform(cvec_counts)
-
-# Top 20 terms using average TF-IDF weight.
-weights = np.asarray(tfidf_trans_weights.mean(axis=0)).ravel().tolist()
-df_weights = pd.DataFrame({'term': cvec.get_feature_names(), 'weight': weights})
-#print(df_weights.sort_values(by='weight', ascending=False).head(20))
-
-################################################################
-################################################################
-
-################################################################
-################ Multinomial Naive Bayes #######################
-
-# tokenize train and test text data
-vect = CountVectorizer()
-X_train_tokens = vect.fit_transform(X_train)
-X_test_tokens = vect.transform(X_test)
-
-nb = MultinomialNB()
-nb.fit(X_train_tokens, y_train)
-y_pred_nb = nb.predict(X_test_tokens)
-# Precision, Accuracy, and Recall model_eval_calculations for NB and SVM.
-def model_eval_calculations(y_test, y_pred_nb):
-    print('Precision:', precision_score(y_test, y_pred_nb, average='weighted'))
-    print('Accuracy:', accuracy_score(y_test, y_pred_nb))
-    print('Recall:', recall_score(y_test, y_pred_nb, average='weighted'))
-
-# Print NB Precision, Accuracy, and Recall
-model_eval_calculations(y_test, y_pred_nb)
+print(classification_report(y_test, clf.predict(X_test), digits=4))
