@@ -51,9 +51,9 @@ X = features
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
 # Clustering the data with Random Forest Classifier
-clf = RandomForestClassifier(n_estimators=1000, random_state=0)
-clf.fit(X_train, y_train)
-y_pred= clf.predict(X_test)
-print(classification_report(y_test,y_pred))
-acc = accuracy_score(y_test, y_pred)
+rf = RandomForestClassifier(n_estimators=1000, random_state=0)
+rf.fit(X_train, y_train)
+y_pred_rf= rf.predict(X_test)
+print(classification_report(y_test,y_pred_rf))
+acc = accuracy_score(y_test, y_pred_rf)
 print('Random Forest accuracy = ' + str(acc * 100) + '%')
