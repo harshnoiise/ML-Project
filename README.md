@@ -2,9 +2,14 @@
   The three algorithms applied to the scraped data from the New York Times are K-Means, Naive Bayes, and Decision Tree.
   
 # K-Means:
+  To compile:
   >> python kmeans-nytimes.py
   
-# Naive Bayes:
-  >> python nb-nytimes.py
+# Decision Tree:
+  To compile:
+  >> python dt-nytimes.py
+  
+  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/dt-accuracy.jpg)
+
   
 
