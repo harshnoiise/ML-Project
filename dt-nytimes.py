@@ -47,9 +47,11 @@ y = labels
 X = features
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Clustering the data with Decision Tree Classifier
 dt = DecisionTreeClassifier()
 dt.fit(X_train, y_train)
 y_pred_dt = dt.predict(X_test)
-
-print(classification_report(y_test, dt.predict(X_test), digits=4))
-
+print(classification_report(y_test, y_pred_dt))
+acc = accuracy_score(y_test, y_pred_dt)
+print('Decision Tree accuracy = ' + str(acc * 100) + '%')
