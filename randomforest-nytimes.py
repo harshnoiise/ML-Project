@@ -20,11 +20,14 @@ from nltk import pos_tag
 from nltk.stem import PorterStemmer
 from collections import Counter
 import time
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.decomposition import PCA
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report
 from sklearn.metrics import roc_auc_score
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score
 import warnings
 warnings.filterwarnings('always')  # "error", "ignore", "always", "default", "module" or "once"
 
@@ -47,8 +50,9 @@ X = features
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
-clf = MultinomialNB()
+# Clustering the data with Random Forest Classifier
+clf = RandomForestClassifier(n_estimators=1000, random_state=0)
 clf.fit(X_train, y_train)
-y_pred_nb = clf.predict(X_test)
-
-print(classification_report(y_test, clf.predict(X_test), digits=4))
+y_pred= clf.predict(X_test)
+print(classification_report(y_test,y_pred))
+print(accuracy_score(y_test, y_pred))

@@ -157,5 +157,5 @@ for name, group in groups:
         labelleft='off')
 
 ax.legend(numpoints=1)
-plt.show()
 plt.savefig('kmeans_visual.png', dpi=200)
+plt.show()
