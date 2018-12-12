@@ -9,6 +9,7 @@
   To compile:
   >> python dt-nytimes.py
   
+  Decision Tree Accuracy
   ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/dt-accuracy.jpg)
 
   
