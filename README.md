@@ -13,11 +13,11 @@
 
 
 # K-Means Result:
-  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/kmeans_visual.png)
+  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/results/kmeans_visual.png)
   
 # Decision Tree Accuracy:
-  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/dt-accuracy.jpg)
+  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/results/dt-accuracy.jpg)
 
 # Random Forest Accuracy:
-  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/randomforest-accuracy.jpg)
+  ![alt text](https://github.com/harshnoiise/ML-Project/blob/master/results/randomforest-accuracy.jpg)
 
