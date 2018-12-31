@@ -1,6 +1,6 @@
 # ML-Project
   The three algorithms applied to the scraped data from the New York Times are K-Means, Decision Tree Classification, and Random Forest Classification.
-  The web crawler used to retrieve the New York Times articles and clean them was the NewYorkTimeCrawler.py file and clean_and_analysis.py file.
+  The web crawler used to retrieve the New York Times articles and clean them iss the NewYorkTimeCrawler.py file and clean_and_analysis.py file.
   
   To compile K-Means Clustering:
   >> python kmeans-nytimes.py
